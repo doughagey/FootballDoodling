@@ -82,11 +82,16 @@ for coordinate in list_of_rows:
     series = pd.Series(coordinate, index = df.columns)
     df = df.append(series, ignore_index=True)
 
-df['player_id'] = playerid
-df['match_id'] = matchid
-df['event_name'] = event_type
-df['team_id'] = teamid
-df['phase_type'] = phase_type
+df['player'] = playerid
+df['match'] = matchid
+df['event'] = event_type
+df['team'] = teamid
+df['phase'] = phase_type
+if event_type == 'Shot':
+    # adding blank columns for target x,y so we can append both shots and pass/cross/etc. to same csv file
+    df['target_x'] = ''
+    df['target_y'] = ''
+df = df[['player','match', 'team', 'phase','location_x', 'location_y', 'target_x', 'target_y' ]]
 print(df)
 
 try:
