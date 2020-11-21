@@ -42,8 +42,7 @@ fig,ax = plt.subplots()
 plt.ylim(-3650, 3650)
 plt.xlim(-5300, 5300)
 
-data_folder = Path("")
-filename = os.path.join(os.getcwd(), data_folder,'Pitch.png')
+filename = os.path.join(os.getcwd(),'Pitch.png')
 im = plt.imread(filename)
 
 graph_2, = ax.plot([], marker='.')
@@ -72,10 +71,9 @@ for coordinate in list_of_rows:
     series = pd.Series(coordinate, index = df.columns)
     df = df.append(series, ignore_index=True)
 
-df['player1_id'] = playerid
+df['player_id'] = playerid
 df['match_id'] = matchid
 df['event_name'] = event_type
-df['event_tab'] = event_type
 df['team_id'] = teamid
 df['phase_type'] = phase_type
 print(df)
