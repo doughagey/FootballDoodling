@@ -5,6 +5,14 @@ from pathlib import Path
 from matplotlib.widgets import TextBox
 import matplotlib.gridspec as gridspec
 
+def graphDrawing(markList):
+    if len(markList) == 2:
+        plt.plot(markList[0], markList[1], 'o', color='orange')
+    elif len(markList) == 4:
+        pass
+    else:
+        print('Not enough data to plot')
+
 def onclick(event):
     xcoords.append(event.xdata)
     ycoords.append(event.ydata)
@@ -18,22 +26,25 @@ def onclick(event):
 
     if event.dblclick:
         row = [xcoords[0], ycoords[0]]
+        graphDrawing(row)
         list_of_rows.append(row)
         xcoords.clear()
         ycoords.clear()
 
     elif len(xcoords) == 2:
         row = [xcoords[0], ycoords[0], xcoords[1], ycoords[1]]
+        graphDrawing(row)
         list_of_rows.append(row)
         xcoords.clear()
         ycoords.clear()
 
+
 # Get info up fron we we don't have to later
-playerid = input('Enter player ID: ')
-matchid= input('Please enter match ID: ')
-event_type = input('Please enter event type: ')
-teamid = input('Please enter team ID: ')
-phase_type = input('Please enter phase type (return for OpenPlay): ')
+playerid = input('Enter player name or ID: ')
+matchid= input('Please enter match name or ID: ')
+event_type = input('Please enter event type (Shot, Cross, Pass, SetPlay): ')
+teamid = input('Please enter team name or ID: ')
+phase_type = input('Please enter game phase type (return for OpenPlay): ')
 
 if len(phase_type)<3:
     phase_type = 'OpenPlay'
