@@ -44,6 +44,13 @@ def onclick(event):
 
 
 # Get info up fron we we don't have to later
+newfile = input('Do you wish to start with a fresh csv file (y/n)? ')
+if newfile == 'y':
+    try:
+        os.remove('FootballDoodling.csv')
+    except Exception as e:
+        print(e)
+        print('File does not exist....proceeding')
 playerid = input('Enter player name or ID: ')
 matchid= input('Please enter match name or ID: ')
 event_type = input('Please enter event type (Shot, Cross, Pass, SetPlay): ')
