@@ -9,7 +9,11 @@ def graphDrawing(markList):
     if len(markList) == 2:
         plt.plot(markList[0], markList[1], 'o', color='orange')
     elif len(markList) == 4:
-        pass
+        ax.annotate("", xy=(markList[2], markList[3]),
+                    xycoords='data',
+                    xytext=(markList[0], markList[1]), textcoords='data',
+                    arrowprops=dict(arrowstyle="->", connectionstyle="arc3", color="gray"), )
+        plt.plot(markList[0], markList[1], "o", color="orange")
     else:
         print('Not enough data to plot')
 
