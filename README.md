@@ -17,11 +17,11 @@ just add them to the code as you see fit. Support to export to csv will be added
 
 ## Examples
 
-Here is an example of the interface showing crosses:
+Here is an example showing the initial interface:
 
 ![Screenshot](Example.png)
 
 
-Here is an example of the interface showing shots:
+Here is an example of the final graph:
 
 ![Screenshot](Example2.png)
