@@ -7,6 +7,8 @@
 * Below are some tips and examples on how to use `FootballDoodling` to draw event graphs
   
 ## Usage
+FootballDoodling was meant for those football fans who don't have access to professional event data.
+with this tool you can create your own, while you watch a game or afterwards.
 
 Running the script can be done via any IDE or other preferred Python environment. Upon running the script the user will be presented with
 a window which includes several textboxes. Here are a few key points when using the tool:
@@ -19,6 +21,14 @@ a window which includes several textboxes. Here are a few key points when using 
   recorded properly in the output file.  
 - To submit/record any event click on the Submit button. If you make a mistake, just don't click Submit
 - Once submit is clicked the last completed event will be recorded
+- After the data is graphed you can use the Plotly camera toolbar object to export
+  the graph to a .png file
+- The exported csv file will get written over each time so rename it if you want to
+  keep the data that is there
+- You can write up a quick script to imprort the .csv data into a database or use as is
+  for your own graphing purposes
+  
+Have fun!!!
 
 ## Examples
 
