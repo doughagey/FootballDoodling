@@ -41,6 +41,13 @@ def actionList():
 def update(variable):
     variable.get()
 
+
+# Read in list of annotated events
+annotated_events_file = open('annotated_events.txt', 'r')
+annotated_events_line = annotated_events_file.readline()
+annotated_events = annotated_events_line.split(',')
+
+# Create empty events list to populate later
 eventList = []
 root = tk.Tk()
 
@@ -128,8 +135,13 @@ annotations_list = []
 
 for index, row in df.iterrows():
     # print(row)
-    test = row['event_type']
-    if test in ('Cross', 'Pass', 'SetPlay', 'Corner'):
+    if row['event_type'] not in annotated_events:
+        # Replace x2, y2 with 0 if it's not an annotated event so it doesn't mess the csv
+        # file up when we export it later and confuse it as a pass when it's a shot or other
+        # non-annotated event
+        df.at[index,'x2'] = new_value= None
+        df.at[index,'y2'] = new_value= None
+    if row['event_type'] in annotated_events:
         arrow = go.layout.Annotation(dict(
             x=row['x2'],
             y=row['y2'],
@@ -237,4 +249,7 @@ fig.update_layout(
 #plt.show()
 fig.show()
 
+print('Exporting csv data file...')
+df.drop('size', axis=1, inplace=True) # don't need to keep size column, just for graphing purposes
+df.to_csv('events.csv', encoding='utf-8', index=False)
 print('Finished!!!')
