@@ -116,128 +116,125 @@ canvas.bind('<Double-Button-1>', doubleclick)
 canvas.configure(scrollregion=canvas.bbox("all"))
 
 root.mainloop()
-graph = input('Do you want to view your graph (y/n)?: ')
 
+#title = input('Please enter a title for the graph: ')
+df = pd.DataFrame(eventList)
+df['size']=9 # set default marker size
+# adjust y values since tkinter plots starting at the top left
+df['y'] = df['y'].apply(lambda x: 500 - x if x != 0 else x)
+df['y2'] = df['y2'].apply(lambda x: 500 - x if x != 0 else x)
 
-if graph == 'y':
-    #title = input('Please enter a title for the graph: ')
-    df = pd.DataFrame(eventList)
-    df['size']=9 # set default marker size
-    # adjust y values since tkinter plots starting at the top left
-    df['y'] = df['y'].apply(lambda x: 500 - x if x != 0 else x)
-    df['y2'] = df['y2'].apply(lambda x: 500 - x if x != 0 else x)
+annotations_list = []
 
-    annotations_list = []
+for index, row in df.iterrows():
+    # print(row)
+    test = row['event_type']
+    if test in ('Cross', 'Pass', 'SetPlay', 'Corner'):
+        arrow = go.layout.Annotation(dict(
+            x=row['x2'],
+            y=row['y2'],
+            xref="x", yref="y",
+            text="",
+            showarrow=True,
+            axref="x", ayref='y',
+            ax=row['x'],
+            ay=row['y'],
+            arrowhead=2,
+            arrowwidth=1.5,
+            arrowcolor='gray',
+            opacity=0.7,
+            startstandoff=4
+        )
+        )
+        annotations_list.append(arrow)
 
-    for index, row in df.iterrows():
-        # print(row)
-        test = row['event_type']
-        if test in ('Cross', 'Pass', 'SetPlay', 'Corner'):
-            arrow = go.layout.Annotation(dict(
-                x=row['x2'],
-                y=row['y2'],
-                xref="x", yref="y",
-                text="",
-                showarrow=True,
-                axref="x", ayref='y',
-                ax=row['x'],
-                ay=row['y'],
-                arrowhead=2,
-                arrowwidth=1.5,
-                arrowcolor='gray',
-                opacity=0.7,
-                startstandoff=4
-            )
-            )
-            annotations_list.append(arrow)
+color_discrete_map = {'Shot': 'red', 'Cross': '#0B2B5A', 'Assist': 'deepskyblue', 'Pass': 'lightgray',
+                      'None': 'lightgray'}
 
-    color_discrete_map = {'Shot': 'red', 'Cross': '#0B2B5A', 'Assist': 'deepskyblue', 'Pass': 'lightgray',
-                          'None': 'lightgray'}
+fig = px.scatter(df, x='x', y='y',color='event_type', size='size',
+                 hover_name="event_type",
+                 range_x=[0, 690], range_y=[0, 520], size_max=9,
+                 width=690, height=520, color_discrete_map=color_discrete_map, opacity=0.7,
+                 hover_data={'player':True, 'teamid':True, 'event_type':True,'x':False, 'y':False, 'matchid':False,
+                             'phase_type':False, 'size':False})
 
-    fig = px.scatter(df, x='x', y='y',color='event_type', size='size',
-                     hover_name="event_type",
-                     range_x=[0, 690], range_y=[0, 520], size_max=9,
-                     width=690, height=520, color_discrete_map=color_discrete_map, opacity=0.7,
-                     hover_data={'player':True, 'teamid':True, 'event_type':True,'x':False, 'y':False, 'matchid':False,
-                                 'phase_type':False, 'size':False})
+fig.update_layout(
+    annotations=annotations_list, )
 
-    fig.update_layout(
-        annotations=annotations_list, )
+# Add halos
+fig.update_traces(marker=dict(
+    line=dict(width=1,
+              color='darkgray')),
+    selector=dict(mode='markers'))
 
-    # Add halos
-    fig.update_traces(marker=dict(
-        line=dict(width=1,
-                  color='darkgray')),
-        selector=dict(mode='markers'))
+# Remove side color scale and hide zero and gridlines
+fig.update_layout(
+    coloraxis_showscale=False,
+    xaxis=dict(showgrid=False, zeroline=False),
+    yaxis=dict(showgrid=False, zeroline=False)
+)
 
-    # Remove side color scale and hide zero and gridlines
-    fig.update_layout(
-        coloraxis_showscale=False,
-        xaxis=dict(showgrid=False, zeroline=False),
-        yaxis=dict(showgrid=False, zeroline=False)
-    )
+# Format the title header to be centered
+'''fig.update_layout(
+    title={
+        'text': title,
+        'y': 1,
+        'x': 0.52,
+        'xanchor': 'center',
+        'yanchor': 'top'})'''
 
-    # Format the title header to be centered
-    '''fig.update_layout(
-        title={
-            'text': title,
-            'y': 1,
-            'x': 0.52,
-            'xanchor': 'center',
-            'yanchor': 'top'})'''
+# Blank out legend title since we don't really need a title. It's self explanatory
+fig.update_layout(legend_title_text='')
 
-    # Blank out legend title since we don't really need a title. It's self explanatory
-    fig.update_layout(legend_title_text='')
+# Position the legend horizontally on top
+fig.update_layout(legend=dict(
+    orientation="h",
+    yanchor="bottom",
+    y=-0.1,  # Negative number puts the legend at the bottom
+    xanchor="right",
+    x=1
+))
 
-    # Position the legend horizontally on top
-    fig.update_layout(legend=dict(
-        orientation="h",
-        yanchor="bottom",
-        y=-0.1,  # Negative number puts the legend at the bottom
-        xanchor="right",
-        x=1
-    ))
+# Disable axis ticks and labels
+fig.update_xaxes(showticklabels=False)
+fig.update_yaxes(showticklabels=False)
+fig.update_xaxes(title_text='')
+fig.update_yaxes(title_text='')
+image_file = 'Pitch.png'
+# image_file = 'WhitePitch.png'
 
-    # Disable axis ticks and labels
-    fig.update_xaxes(showticklabels=False)
-    fig.update_yaxes(showticklabels=False)
-    fig.update_xaxes(title_text='')
-    fig.update_yaxes(title_text='')
-    image_file = 'Pitch.png'
-    # image_file = 'WhitePitch.png'
+from PIL import Image
 
-    from PIL import Image
+img = Image.open(image_file)
 
-    img = Image.open(image_file)
+fig.add_layout_image(
+    dict(
+        source=img,
+        xref="x",
+        yref="y",
+        x=0,
+        y=520,
+        sizex=690,
+        sizey=520,
+        sizing="stretch",
+        opacity=0.5,
+        layer="below")
+)
 
-    fig.add_layout_image(
-        dict(
-            source=img,
-            xref="x",
-            yref="y",
-            x=0,
-            y=520,
-            sizex=690,
-            sizey=520,
-            sizing="stretch",
-            opacity=0.5,
-            layer="below")
-    )
+# Sets background to white vs grey
+fig.update_layout(template='plotly_dark',
+                  xaxis=dict(
+                      showgrid=False,
+                      showticklabels=False),
+                  plot_bgcolor='black',
+                  #paper_bgcolor='rgba(0, 0, 0, 0)'
+                  )
 
-    # Sets background to white vs grey
-    fig.update_layout(template='plotly_dark',
-                      xaxis=dict(
-                          showgrid=False,
-                          showticklabels=False),
-                      plot_bgcolor='black',
-                      #paper_bgcolor='rgba(0, 0, 0, 0)'
-                      )
-
-    fig.update_layout(
-        font_family="Arial",
-        title_font_family="Arial"
-    )
-    #plt.show()
-    fig.show()
+fig.update_layout(
+    font_family="Arial",
+    title_font_family="Arial"
+)
+#plt.show()
+fig.show()
 
 print('Finished!!!')
