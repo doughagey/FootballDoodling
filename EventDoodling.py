@@ -1,6 +1,4 @@
 import tkinter as tk
-import matplotlib.pyplot as plt
-import os
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
